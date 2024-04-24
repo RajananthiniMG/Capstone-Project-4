@@ -1,4 +1,3 @@
-# Capstone-Project-4
 # Airbnb Data Analysis
 ## Overview
 This Streamlit application allows users to explore and analyze Airbnb data. Users can upload their own dataset or use the default provided dataset. The app provides functionalities to filter data by neighborhood and room type, visualize price distributions, view room type summaries, and visualize geographical information.
