@@ -2,6 +2,8 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
 
 # Streamlit Part
 
@@ -12,7 +14,7 @@ st.set_page_config(
     menu_items={
         'Get Help': 'https://www.extremelycoolapp.com/help',
         'Report a bug': "https://www.extremelycoolapp.com/bug",
-        'About': "# This is a header. This is an *extremely* cool app! Where you can Analysis Airbnb data"
+        'About': "# Welcome to Airbnb Analysis\n\n#### About Airbnb:\n[Airbnb](https://www.airbnb.com/) is a popular online marketplace that connects travelers with hosts who offer lodging accommodations. Founded in 2008, Airbnb has transformed the way people travel by providing a platform for individuals to rent out their homes, apartments, or rooms to guests for short-term stays.\n\n#### Airbnb Analysis App:\nThis app allows you to explore and analyze Airbnb data from various locations. Whether you're a traveler looking for insights into accommodation prices or a host seeking to understand market trends, this app provides you with tools to dive deep into Airbnb listings.\n\n### Features:\n- **Explore Data**: Upload your dataset or use the default one provided to explore Airbnb listings.\n- **Filter Data**: Use the sidebar to filter the data by neighborhood and room type.\n- **Visualize Data**: See price distributions, room type summaries, and geospatial information through interactive visualizations.\n- **Download Data**: Download the filtered or original dataset for further analysis.\n\n#### How to Use:\n1. **Explore Data**: Click on \"Explore Data\" in the menu to start analyzing Airbnb listings.\n2. **Filter Data**: Use the sidebar to filter listings based on your preferences.\n3. **Visualize Data**: Interact with the visualizations to gain insights into Airbnb data.\n4. **Download Data**: Download the filtered or original dataset for your analysis needs.\n\n#### Need Help or Found a Bug?\nIf you need assistance or encounter any issues while using the app, feel free to reach out to us:\n- [Get Help](https://www.extremelycoolapp.com/help)\n- [Report a Bug](https://www.extremelycoolapp.com/bug)"
     }
 )
 st.title('Airbnb Analysis',)
@@ -33,26 +35,47 @@ menu = option_menu(None,["Home","Explore Data","Contact"],
 if menu == "Home":
     st.title('Welcome to Airbnb Analysis')
 
-    st.markdown(
+    st.image(r"C:\Users\rajan\OneDrive\Desktop\AirbnbAnalysis\airbnb.png", use_column_width=True)  
+
+    st.write(
     """
-    This app allows you to explore and analyze Airbnb data. Upload your own dataset or use the default one provided. 
-    You can filter the data by neighborhood and room type, visualize price distributions, and view geospatial information.
+    ### About Airbnb:
+    Airbnb is a popular online marketplace that connects travelers with hosts who offer lodging accommodations. Founded in 2008, Airbnb has transformed the way people travel by providing a platform for individuals to rent out their homes, apartments, or rooms to guests for short-term stays.
 
-    ### How to Use:
-    1. **Explore Data**: Upload your dataset or use the default one to explore Airbnb listings.
-    2. **Filter Data**: Use the sidebar to filter the data by neighborhood and room type.
-    3. **Visualize Data**: See price distributions, room type summaries, and geospatial information.
-    4. **Download Data**: Download the filtered or original dataset for further analysis.
+    ### Airbnb Analysis App:
+    This app allows you to explore and analyze Airbnb data from various locations. Whether you're a traveler looking for insights into accommodation prices or a host seeking to understand market trends, this app provides you with tools to dive deep into Airbnb listings.
 
-    [Need Help?](https://www.extremelycoolapp.com/help) | [Report a Bug](https://www.extremelycoolapp.com/bug)
+    ### Key Features:
+    - **Explore Data**: Upload your dataset or use the default one provided to explore Airbnb listings.
+    - **Filter Data**: Use the sidebar to filter the data by neighborhood and room type.
+    - **Visualize Data**: See price distributions, room type summaries, and geospatial information through interactive visualizations.
+    - **Download Data**: Download the filtered or original dataset for further analysis.
+    """
+    )
+
+    st.subheader('How to Use:')
+    st.write(
+    """
+    1. Click on "Explore Data" in the menu to start analyzing Airbnb listings.
+    2. Use the sidebar to filter listings based on your preferences.
+    3. Interact with the visualizations to gain insights into Airbnb data.
+    4. Download the filtered or original dataset for your analysis needs.
+    """
+    )
+
+    st.subheader('Need Help or Found a Bug?')
+    st.write(
+    """
+    If you need assistance or encounter any issues while using the app, feel free to reach out to us:
+    - [Get Help](https://www.extremelycoolapp.com/help)
+    - [Report a Bug](https://www.extremelycoolapp.com/bug)
     """
     )
 
 if menu == "Explore Data":
      with st.container(border=True):
 
-        upload_file = st.file_uploader("Upload a File:", type=["csv","txt","xlsx","xls"]) #here we uploading the image to extract text from i
-            
+        upload_file = st.file_uploader("Upload a File:", type=["csv","txt","xlsx","xls"]) #here we uploading the data file to Analysis and vizualise those data in various format
         if upload_file is not None:
             df = pd.read_csv(upload_file)
             df.fillna(value='NA', inplace=True)
@@ -79,111 +102,122 @@ if menu == "Explore Data":
           df3 = df2[df2["Neighbourhood"].isin(Neighbourhood)]
 
         if not Neighbourhood_group and not Neighbourhood:
-             filtered_df = df
+             filtered_df_data = df
         elif not Neighbourhood:
-           filtered_df = df[df["Neighbourhood_group"].isin(Neighbourhood_group)]
+           filtered_df_data = df[df["Neighbourhood_group"].isin(Neighbourhood_group)]
         elif not Neighbourhood_group:
-             filtered_df = df[df["Neighbourhood"].isin(Neighbourhood)]
+             filtered_df_data = df[df["Neighbourhood"].isin(Neighbourhood)]
         elif Neighbourhood:
-            filtered_df = df3[df["Neighbourhood"].isin(Neighbourhood)]
+            filtered_df_data = df3[df["Neighbourhood"].isin(Neighbourhood)]
         elif Neighbourhood_group:
-            filtered_df = df3[df["Neighbourhood_group"].isin(Neighbourhood_group)]
+            filtered_df_data = df3[df["Neighbourhood_group"].isin(Neighbourhood_group)]
         elif Neighbourhood_group and Neighbourhood:
-             filtered_df = df3[df["Neighbourhood_group"].isin(Neighbourhood_group) & df3["Neighbourhood"].isin(Neighbourhood)]
+             filtered_df_data = df3[df["Neighbourhood_group"].isin(Neighbourhood_group) & df3["Neighbourhood"].isin(Neighbourhood)]
         else:
-             filtered_df = df3[df3["Neighbourhood_group"].isin(Neighbourhood_group) & df3["Neighbourhood"].isin(Neighbourhood)]
+             filtered_df_data = df3[df3["Neighbourhood_group"].isin(Neighbourhood_group) & df3["Neighbourhood"].isin(Neighbourhood)]
 
-        room_type_df = filtered_df.groupby(by=["room_type"], as_index=False)["price"].sum()
+        room_type_df = filtered_df_data.groupby(by=["room_type"], as_index=False)["price"].sum()
 
         col1, col2 = st.columns(2)
         with col1:
-           fig = px.scatter(room_type_df, x="room_type", y="price", 
-              color="room_type",  # Use room type for color differentiation
-              color_discrete_sequence=px.colors.qualitative.Set3,  # Specify color palette
-              title='Room Type Prices',
-              labels={'price': 'Price', 'room_type': 'Room Type'},
-              symbol="room_type",  # Use different symbols for each room type
-              size="price",        # Use price values to determine marker sizes
-              hover_name="room_type")  # Display room type on hover)
+              fig = px.scatter(room_type_df, x="room_type", y="price", color="room_type", color_discrete_sequence=px.colors.qualitative.Set3,  
+                    title='Room Type Prices', labels={'price': 'Price', 'room_type': 'Room Type'},symbol="room_type", size="price",        
+                    hover_name="room_type") 
+              
+             # Customize layout
+              fig.update_layout(xaxis_title='Room Type', 
+                    yaxis_title='Price',
+                    title='Room Type Prices Variation',
+                    legend_title='Room Type')
+
+             # Show the plot
+              st.plotly_chart(fig, use_container_width=True)
+
+
+        with col2:            
+            fig = px.sunburst(filtered_df_data, 
+                    path=['Neighbourhood_group'], 
+                    values='price',
+                    title='Room Type Distribution Across Neighbourhoods and Neighbourhood Groups')
 
             # Customize layout
-           fig.update_layout(xaxis_title='Room Type', 
-                  yaxis_title='Price',
-                  title='Room Type Prices Variation',
-                  legend_title='Room Type')
+            fig.update_layout(title='Room Type Distribution Across Neighbourhoods and Neighbourhood Groups')
 
             # Show the plot
-           st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig,use_container_width=True)
 
-        with col2:
-           fig = px.bar(filtered_df, y="Neighbourhood_group", x="price", 
-                 orientation='h', 
-                 labels={'price': 'Price', 'Neighbourhood_group': 'Neighbourhood Group'},
-                 color='Neighbourhood_group',  # Specify color based on neighborhood group
-                 color_discrete_sequence=px.colors.qualitative.Dark24,  # Choose a different color scheme
-                 title='Distribution of Prices Across Neighbourhood Groups')
-
-            # Customize layout
-           fig.update_layout(yaxis={'categoryorder': 'total ascending'},  # Sort by total price
-                            xaxis_title='Price', 
-                            yaxis_title='Neighbourhood Group',
-                            bargap=0.20)
-
-            # Show the plot
-           st.plotly_chart(fig, use_container_width=True)
-
-
-        with st.expander("Room_type and Neighbourhood_group wise price"):
+     with st.expander("Room_type and Neighbourhood_group wise price"):
             col1, col2 = st.columns(2)
 
             with col1:
                 # Room_type wise price
-                with st.container():
-                    st.subheader("Room_type wise price")
-                    st.write(room_type_df.style.background_gradient(cmap="Blues"))
-                    csv_room_type = room_type_df.to_csv(index=False).encode('utf-8')
-                    st.download_button("Download Room_type Data", data=csv_room_type, file_name="room_type.csv", mime="text/csv",
-                                    help='Click here to download the Room_type data as a CSV file')
-                
+                st.subheader("Room_type wise price")
+                st.write(room_type_df.style.background_gradient(cmap="Blues"))
+                room_type_data_csv = room_type_df.to_csv(index=False).encode('utf-8')
+                st.download_button("Download Room_type Data", data=room_type_data_csv, file_name="room_type.csv", mime="text/csv",
+                                help='Click here to download the Room_type data as a CSV file')
+            
             with col2:
                 # Neighbourhood_group wise price
-                with st.container():
-                    st.subheader("Neighbourhood_group wise price")
-                    Neighbourhood_group = filtered_df.groupby(by="Neighbourhood_group", as_index=False)["price"].sum()
-                    st.write(Neighbourhood_group.style.background_gradient(cmap="Oranges"))
-                    csv_neighbourhood_group = Neighbourhood_group.to_csv(index=False).encode('utf-8')
-                    st.download_button("Download Neighbourhood_group Data", data=csv_neighbourhood_group, file_name="Neighbourhood_group.csv", mime="text/csv",
-                                    help='Click here to download the Neighbourhood_group data as a CSV file')
-        
-     # Create a treemap
-        fig = px.treemap(filtered_df, path=['Neighbourhood_group', 'Neighbourhood', 'room_type'], values='price',
-                        title='Room Type Distribution Across Neighbourhoods and Neighbourhood Groups')
+                st.subheader("Neighbourhood_group wise price")
+                Neighbourhood_group = filtered_df_data.groupby(by="Neighbourhood_group", as_index=False)["price"].sum()
+                st.write(Neighbourhood_group.style.background_gradient(cmap="Greens"))
+                neighbourhood_group_data_csv = Neighbourhood_group.to_csv(index=False).encode('utf-8')
+                st.download_button("Download Neighbourhood_group Data", data= neighbourhood_group_data_csv, file_name="Neighbourhood_group.csv", mime="text/csv",
+                                help='Click here to download the Neighbourhood_group data as a CSV file')
+            
+     with st.container(border=True):
+        fig = px.bar(filtered_df_data, x='Neighbourhood_group', y='price', color='Neighbourhood', facet_col='room_type',
+                    barmode='group', title='Room Type Distribution Across Neighbourhoods and Neighbourhood Groups',hover_data=['Neighbourhood_group', 'Neighbourhood', 'price'],
+                    labels={'Neighbourhood_group': 'Neighbourhood Group', 'Neighbourhood': 'Neighbourhood', 'price': 'Price'})
 
         # Customize layout
-        fig.update_layout(title='Room Type Distribution Across Neighbourhoods and Neighbourhood Groups')
+        fig.update_layout(xaxis_title='Neighbourhood Group', 
+                        yaxis_title='Price',
+                        title='Room Type Distribution Across Neighbourhoods and Neighbourhood Groups')
 
         # Show the plot
         st.plotly_chart(fig, use_container_width=True)
 
-        with st.expander("Detailed Room Availability and Price View Data in the Neighbourhood"):
-            st.write(filtered_df.iloc[:500, 1:20:2].style.background_gradient(cmap="Oranges"))
 
-        # Download orginal DataSet
-        csv = df.to_csv(index=False).encode('utf-8')
-        st.download_button('Download Data', data=csv, file_name="Data.csv", mime="text/csv")
+     with st.expander("Detailed Room Availability and Price View Data in the Neighbourhood"):
+            st.write(filtered_df_data.iloc[:500, 1:15:2].style.background_gradient(cmap="Oranges"))
 
-        import plotly.figure_factory as ff
+                # Download orginal DataSet
+            csv = df.to_csv(index=False).encode('utf-8')
+            st.download_button('Download Data', data=csv, file_name="Data.csv", mime="text/csv")
 
-        st.subheader(":point_right: Neighbourhood_group wise Room_type and Price")
-        with st.expander("Summary_Table"):
-            df_sample = df[0:5][["Neighbourhood_group", "Neighbourhood",  "room_type", "price",  "host_name"]]
+     st.subheader(":point_right: Neighbourhood_group wise Room_type and Price")
+     with st.expander("Summary_Table"):
+            df_sample = df[0:5][["Neighbourhood", "room_type", "name","price","host_name","cancellation_policy","minimum_nights"]]
             fig = ff.create_table(df_sample, colorscale="Cividis")
-            st.plotly_chart(fig, use_container_width=True)
- 
+            for i in range(len(fig.layout.annotations)):
+                fig.layout.annotations[i].font.size = 11 
+                fig.layout.annotations[i].width =1500
 
-        # Display the map
-        st.subheader('Geospatial Visualization')
-        st.map(data=df, latitude='latitude', longitude='longitude', color=None, size=100, zoom=None, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True)
+
+    # Display the map
+     st.subheader('Geospatial Visualization')
+     fig = go.Figure(go.Scattermapbox(
+            lat=df['latitude'],  
+            lon=df['longitude'],  
+            mode='markers+text',  
+            marker={'size': 10, 'color': 'blue'},  
+            text=df['Neighbourhood'], 
+            textposition='top left',  
+            textfont=dict(size=12, color='black')
+        ))
+
+        # Update map layout
+     fig.update_layout(
+            mapbox_style="carto-positron",  
+            mapbox_center={"lat": df['latitude'].mean(), "lon": df['longitude'].mean()}, 
+            margin={"r":0,"t":0,"l":0,"b":0}, 
+        )
+
+        # Show the map
+     st.plotly_chart(fig, use_container_width=True)
                 
 
 
