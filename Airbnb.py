@@ -218,6 +218,8 @@ if menu == "Explore Data":
 
         # Show the map
      st.plotly_chart(fig, use_container_width=True)
+
+     st.image(r"C:\Users\rajan\OneDrive\Desktop\AirbnbAnalysis\powerbi Report.png", caption="Power BI Report")
                 
 
 
